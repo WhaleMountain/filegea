@@ -66,6 +66,7 @@ const (
 		padding: 15px;
 		text-align: center;
 		box-shadow: 4px 4px;
+		word-wrap: break-word;
 	}
 	img {
 		max-width: 100%;
@@ -75,15 +76,12 @@ const (
 		width: 300px;
 		height: auto;
 	}
-	object {
-		width: 180px;
-		height: auto;
-	}
-	p {
+	div p {
 		text-align: left;
 		font-size: large;
 		font-weight: bold;
 		color: #4b4b4b;
+		text-align: center;
 	}
 	.linkbox {
 		position: relative;
