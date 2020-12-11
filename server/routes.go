@@ -12,9 +12,10 @@ func router() *gin.Engine {
 
 	filegea := controllers.NewFileGeaController()
 
-	r.GET("/filegea", filegea.Index)
+	r.GET("/", filegea.Redirect)
+	r.GET("/filegea/*path", filegea.Index)
 
-	r.StaticFS("/Trash", http.Dir("./Trash/picture"))
+	r.StaticFS("/Data", http.Dir("./Data"))
 
 	return r
 }
