@@ -1,8 +1,10 @@
 package controllers
 
 import (
+	"filegea/internal/fileope"
 	"filegea/internal/view"
 	"io/ioutil"
+	"log"
 	"net/http"
 	"path/filepath"
 
@@ -23,10 +25,31 @@ func (fgc *FileGeaController) Index(c *gin.Context) {
 	searchPATH := c.Param("path")
 
 	path := filepath.Join(basePath, searchPATH)
-
 	files, _ := ioutil.ReadDir(path)
 
-	c.Writer.WriteString(view.Template(searchPATH, files))
+	c.Writer.WriteString(view.Index(searchPATH, files))
+}
+
+//UploadFrom upload form
+func (fgc *FileGeaController) UploadFrom(c *gin.Context) {
+	savePath := c.Param("path")
+	c.Writer.WriteString(view.Upload(savePath))
+}
+
+//Upload upload file
+func (fgc *FileGeaController) Upload(c *gin.Context) {
+	file, err := c.FormFile("file")
+	if err != nil {
+		log.Printf("form file error %s\n", err)
+		c.Redirect(http.StatusMovedPermanently, "/filegea")
+	}
+
+	savePath := c.Param("path")
+	if err := fileope.Save(file, savePath); err != nil {
+		log.Printf("form file error %s\n", err)
+	}
+
+	c.Redirect(http.StatusMovedPermanently, "/filegea")
 }
 
 //Redirect / -> /filegea

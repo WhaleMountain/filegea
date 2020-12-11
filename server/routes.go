@@ -14,6 +14,9 @@ func router() *gin.Engine {
 
 	r.GET("/", filegea.Redirect)
 	r.GET("/filegea/*path", filegea.Index)
+	r.GET("/upload/*path", filegea.UploadFrom)
+
+	r.POST("/upload/*path", filegea.Upload)
 
 	r.StaticFS("/Data", http.Dir("./Data"))
 
