@@ -8,16 +8,23 @@ import (
 
 const (
 	css = `
+	body {
+		margin: 20px;
+		padding: -10px;
+		background-color: #e6e6e6;
+	}
 	.grid {
 		display: grid;
+		padding: 10px;
 		gap: 10px;
 		grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
 	}
 	.item {
 		border-radius: 10px;
-		background: #edf;
+		background: #b9c8d5;
 		padding: 15px;
 		text-align: center;
+		box-shadow: 4px 4px;
 	}
 	img {
 		max-width: 100%;
@@ -33,6 +40,9 @@ const (
 	}
 	p {
 		text-align: left;
+		font-size: large;
+		font-weight: bold;
+		color: #4b4b4b;
 	}
 	.linkbox {
 		position: relative;
@@ -43,6 +53,30 @@ const (
 		left: 0;
 		height:100%;
 		width: 100%;
+	}
+	header {
+		padding: 30px 4% 5px;
+		top: 0;
+		width: 100%;
+		background-color: #fff;
+		display: flex;
+		align-items: center;
+	}
+	a {	
+		text-decoration: none;
+		color: #4b4b4b;
+	}
+	ul {
+		list-style: none;
+		margin: 0;
+		display: flex;
+	}
+	li {
+		margin: 0 0 0 15px;
+		font-size: 14px;
+	}
+	nav {
+		margin: auto auto auto 0;
 	}
 	`
 )
@@ -111,6 +145,17 @@ func Template(searchPath string, fInfos []os.FileInfo) string {
 		<meta charset="UTF-8">
 		<title>` + title + `</title>
 		<style>` + css + `</style>
+		<header>
+		<h1>
+			<a href="/">FILEGEA</a>
+		</h1>
+		<nav class="pc-navi">
+			<ul>
+				<li><a href="/filegea"><h2>HOME</h2></a></li>
+				<li><a href="#"><h2>UPLOAD</h2></a></li>
+			</ul>
+		</nav>
+		</header>
 	</head>
 	<body>
 		<div class="grid">` + items.String() + `</div>
