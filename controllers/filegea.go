@@ -102,7 +102,7 @@ func (fgc *FileGeaController) Download(c *gin.Context) {
 		filename, fpath, _ := fileope.Download(paths)
 
 		c.Writer.Header().Add("Content-Disposition", fmt.Sprintf("attachment; filename=%s", filename))
-		c.Writer.Header().Add("Content-Type", "application/octet-stream")
+		c.Writer.Header().Add("Content-Type", "application/zip")
 		c.File(fpath)
 	}
 }
