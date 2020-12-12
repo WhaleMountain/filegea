@@ -224,7 +224,7 @@ func Index(searchPath string, fInfos []os.FileInfo) string {
 }
 
 //Upload upload html
-func Upload(savePath string) string {
+func Upload(savePath, status string) string {
 	title := "FileGEA Upload"
 
 	html := `
@@ -251,7 +251,7 @@ func Upload(savePath string) string {
 	<body>
 		<form action="/upload` + savePath + `" method="POST" class="upload" enctype="multipart/form-data">
 			<input type="file" class="file" name="file" multiple>
-			<p>Drag and Drop or Click in this area.</p>
+			<p>` + status + `</p>
 			<button type="submit">Upload</button>
   		</form>
 	</body>

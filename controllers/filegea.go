@@ -38,27 +38,32 @@ func (fgc *FileGeaController) Index(c *gin.Context) {
 //UploadFrom upload form
 func (fgc *FileGeaController) UploadFrom(c *gin.Context) {
 	savePath := c.Param("path")
-	c.Writer.WriteString(view.Upload(savePath))
+	status := "Drag and Drop or Click in this area."
+	c.Writer.WriteString(view.Upload(savePath, status))
 }
 
 //Upload upload file
 func (fgc *FileGeaController) Upload(c *gin.Context) {
+	savePath := c.Param("path")
 	form, err := c.MultipartForm()
 	if err != nil {
 		log.Printf("Multipart form error %s\n", err)
-		c.Redirect(http.StatusMovedPermanently, "/filegea")
+		status := fmt.Sprintf("Error: %s", err)
+		c.Writer.WriteString(view.Upload(savePath, status))
 	}
 
 	files := form.File["file"]
 
-	savePath := c.Param("path")
 	for _, file := range files {
 		if err := fileope.Save(file, savePath); err != nil {
 			log.Printf("file save error %s\n", err)
+			status := fmt.Sprintf("Error: %s", err)
+			c.Writer.WriteString(view.Upload(savePath, status))
 		}
 	}
 
-	c.Redirect(http.StatusMovedPermanently, "/filegea")
+	status := "Upload Success !!"
+	c.Writer.WriteString(view.Upload(savePath, status))
 }
 
 //DeleteForm delete page
