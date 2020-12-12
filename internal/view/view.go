@@ -53,15 +53,21 @@ const (
 		outline: none;
 		box-shadow: 4px 4px;
 	}
+	.upload button:hover {
+		background-color: #91a9b8;
+	}
 	.delete {
 		text-align: center;
 	}
 	.delete button{
 		color: #4b4b4b;
-		background: #bfa1bd;
+		background: #aa91c3;
 		width: 600px;
 		height: 50px;
 		box-shadow: 4px 4px;
+	}
+	.delete button:hover {
+		background-color: #bfa1bd;
 	}
 	.download {
 		text-align: center;
@@ -72,6 +78,9 @@ const (
 		width: 600px;
 		height: 50px;
 		box-shadow: 4px 4px;
+	}
+	.download button:hover {
+		background-color: #9bcd87;
 	}
 	body {
 		margin: 20px;
@@ -92,6 +101,9 @@ const (
 		box-shadow: 4px 4px;
 		word-wrap: break-word;
 	}
+	.item:hover {
+		background-color: #91a9b8;
+	}
 	img {
 		max-width: 100%;
 		height: auto;
@@ -100,7 +112,7 @@ const (
 		width: 100%;
 		height: auto;
 	}
-	div p {
+	p {
 		text-align: left;
 		font-size: large;
 		font-weight: bold;
@@ -138,6 +150,10 @@ const (
 	li {
 		margin: 0 0 0 15px;
 		font-size: 14px;
+	}
+	li a:hover {
+		color: #b9c8d5;
+		background-color:#999;
 	}
 	nav {
 		margin: auto auto auto 0;
@@ -208,6 +224,7 @@ func Index(searchPath string, fInfos []os.FileInfo) string {
 			<ul>
 				<li><a href="/filegea"><h2>HOME</h2></a></li>
 				<li><a href="/upload` + searchPath + `"><h2>UPLOAD</h2></a></li>
+				<li><a href="/uploaddir` + searchPath + `"><h2>UPLOAD DIRECTORY</h2></a></li>
 				<li><a href="/download` + searchPath + `"><h2>DOWNLOAD</h2></a></li>
 				<li><a href="/delete` + searchPath + `"><h2>DELETE</h2></a></li>
 			</ul>
@@ -242,6 +259,7 @@ func Upload(savePath, status string) string {
 			<ul>
 				<li><a href="/filegea"><h2>HOME</h2></a></li>
 				<li><a href="/upload` + savePath + `"><h2>UPLOAD</h2></a></li>
+				<li><a href="/uploaddir` + savePath + `"><h2>UPLOAD DIRECTORY</h2></a></li>
 				<li><a href="/download` + savePath + `"><h2>DOWNLOAD</h2></a></li>
 				<li><a href="/delete` + savePath + `"><h2>DELETE</h2></a></li>
 			</ul>
@@ -250,10 +268,49 @@ func Upload(savePath, status string) string {
 	</head>
 	<body>
 		<form action="/upload` + savePath + `" method="POST" class="upload" enctype="multipart/form-data">
-			<input type="file" class="file" name="file" multiple>
+			<input type="file" class="file" name="file" multiple >
 			<p>` + status + `</p>
-			<button type="submit">Upload</button>
-  		</form>
+			<button type="submit">Upload File</button>
+		</form>
+	</body>
+	</html>
+	`
+
+	return html
+}
+
+//UploadDir upload html
+func UploadDir(savePath, status string) string {
+	title := "FileGEA Upload"
+
+	html := `
+	<!DOCTYPE html>
+	<html lang="ja">
+	<head>
+		<meta charset="UTF-8">
+		<title>` + title + `</title>
+		<style>` + css + `</style>
+		<header>
+		<h1>
+			<a href="/">FILEGEA</a>
+		</h1>
+		<nav class="pc-navi">
+			<ul>
+				<li><a href="/filegea"><h2>HOME</h2></a></li>
+				<li><a href="/upload` + savePath + `"><h2>UPLOAD</h2></a></li>
+				<li><a href="/uploaddir` + savePath + `"><h2>UPLOAD DIRECTORY</h2></a></li>
+				<li><a href="/download` + savePath + `"><h2>DOWNLOAD</h2></a></li>
+				<li><a href="/delete` + savePath + `"><h2>DELETE</h2></a></li>
+			</ul>
+		</nav>
+		</header>
+	</head>
+	<body>
+		<form action="/upload` + savePath + `" method="POST" class="upload" enctype="multipart/form-data">
+			<input type="file" class="file" name="file" webkitdirectory mozdirectory>
+			<p>` + status + `</p>
+			<button type="submit">Upload Directory</button>
+		</form>
 	</body>
 	</html>
 	`
@@ -328,6 +385,7 @@ func Delete(searchPath string, fInfos []os.FileInfo) string {
 			<ul>
 				<li><a href="/filegea"><h2>HOME</h2></a></li>
 				<li><a href="/upload` + searchPath + `"><h2>UPLOAD</h2></a></li>
+				<li><a href="/uploaddir` + searchPath + `"><h2>UPLOAD DIRECTORY</h2></a></li>
 				<li><a href="/download` + searchPath + `"><h2>DOWNLOAD</h2></a></li>
 				<li><a href="/delete` + searchPath + `"><h2>DELETE</h2></a></li>
 			</ul>
@@ -413,6 +471,7 @@ func Download(searchPath string, fInfos []os.FileInfo) string {
 			<ul>
 				<li><a href="/filegea"><h2>HOME</h2></a></li>
 				<li><a href="/upload` + searchPath + `"><h2>UPLOAD</h2></a></li>
+				<li><a href="/uploaddir` + searchPath + `"><h2>UPLOAD DIRECTORY</h2></a></li>
 				<li><a href="/download` + searchPath + `"><h2>DOWNLOAD</h2></a></li>
 				<li><a href="/delete` + searchPath + `"><h2>DELETE</h2></a></li>
 			</ul>

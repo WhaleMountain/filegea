@@ -42,6 +42,13 @@ func (fgc *FileGeaController) UploadFrom(c *gin.Context) {
 	c.Writer.WriteString(view.Upload(savePath, status))
 }
 
+//UploadFromDir upload dir form
+func (fgc *FileGeaController) UploadFromDir(c *gin.Context) {
+	savePath := c.Param("path")
+	status := "Drag and Drop or Click in this area."
+	c.Writer.WriteString(view.UploadDir(savePath, status))
+}
+
 //Upload upload file
 func (fgc *FileGeaController) Upload(c *gin.Context) {
 	savePath := c.Param("path")

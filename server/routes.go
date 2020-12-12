@@ -15,6 +15,7 @@ func router() *gin.Engine {
 	r.GET("/", filegea.Redirect)
 	r.GET("/filegea/*path", filegea.Index)
 	r.GET("/upload/*path", filegea.UploadFrom)
+	r.GET("/uploaddir/*path", filegea.UploadFromDir)
 	r.GET("/delete/*path", filegea.DeleteForm)
 	r.GET("/download/*path", filegea.DownloadForm)
 

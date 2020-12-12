@@ -15,13 +15,11 @@ func Save(upfile *multipart.FileHeader, savePath string) error {
 	fileName := upfile.Filename
 
 	conf := config.GetConfig()
-	saveDir := filepath.Join(conf.DataPath, savePath)
+	saveFile := filepath.Join(conf.DataPath, savePath, fileName)
 
-	if err := os.MkdirAll(saveDir, 0755); err != nil {
+	if err := os.MkdirAll(filepath.Dir(saveFile), 0755); err != nil {
 		return err
 	}
-
-	saveFile := filepath.Join(saveDir, fileName)
 
 	out, err := os.Create(saveFile)
 	if err != nil {
