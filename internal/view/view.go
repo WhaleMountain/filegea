@@ -173,7 +173,7 @@ const (
 
 var (
 	imagePrefix = []string{
-		"ping", "PING",
+		"png", "PNG",
 		"jpeg", "JPG", "JPEG", "jpg",
 		"gif", "svg",
 	}
