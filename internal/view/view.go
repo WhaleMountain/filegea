@@ -19,11 +19,11 @@ const (
 	.upload{
 		position: absolute;
 		top: 40%;
-		left: 50%;
+		left: 20%;
 		margin-top: -100px;
-		margin-left: -250px;
-		width: 500px;
-		height: 200px;
+		margin-left: -100px;
+		width: 850px;
+		height: 500px;
 		border: 4px dashed #b9c8d5;
 	}
 	.upload p{
@@ -42,45 +42,43 @@ const (
 		outline: none;
 		opacity: 0;
 	}
-	.upload button{
-		margin: 0;
+	.upbtn{
+		font-weight: bold;
 		color: #4b4b4b;
-		background: #b9c8d5;
-		width: 508px;
-		height: 35px;
-		margin-top: -20px;
-		margin-left: -4px;
-		transition: all .2s ease;
-		outline: none;
+		background: #a6deab;
+		width: 100px;
+		height: 50px;
 		box-shadow: 4px 4px;
 	}
-	.upload button:hover {
-		background-color: #91a9b8;
+	.upbtn:hover {
+		background-color: #9bcd87;
 	}
 	.delete {
 		text-align: center;
 	}
-	.delete button{
+	.delbtn{
+		font-weight: bold;
 		color: #4b4b4b;
-		background: #aa91c3;
-		width: 600px;
+		background: #a6deab;
+		width: 100px;
 		height: 50px;
 		box-shadow: 4px 4px;
 	}
-	.delete button:hover {
-		background-color: #bfa1bd;
+	.delbtn:hover {
+		background-color: #9bcd87;
 	}
 	.download {
 		text-align: center;
 	}
-	.download button{
+	.dlbtn{
+		font-weight: bold;
 		color: #4b4b4b;
 		background: #a6deab;
-		width: 600px;
+		width: 100px;
 		height: 50px;
 		box-shadow: 4px 4px;
 	}
-	.download button:hover {
+	.dlbtn:hover {
 		background-color: #9bcd87;
 	}
 	body {
@@ -290,15 +288,15 @@ func Upload(savePath, status string) string {
 				<li><a href="/uploaddir` + savePath + `"><h2>UPLOAD DIRECTORY</h2></a></li>
 				<li><a href="/download` + savePath + `"><h2>DOWNLOAD</h2></a></li>
 				<li><a href="/delete` + savePath + `"><h2>DELETE</h2></a></li>
+				<li><button type="submit" class="upbtn" form="upload">UPLOAD</button></li>
 			</ul>
 		</nav>
 		</header>
 	</head>
 	<body>
-		<form action="/upload` + savePath + `" method="POST" class="upload" enctype="multipart/form-data">
+		<form action="/upload` + savePath + `" method="POST" id="upload" class="upload" enctype="multipart/form-data">
 			<input type="file" class="file" name="file" multiple >
 			<p>` + status + `</p>
-			<button type="submit">Upload File</button>
 		</form>
 	</body>
 	</html>
@@ -329,15 +327,15 @@ func UploadDir(savePath, status string) string {
 				<li><a href="/uploaddir` + savePath + `"><h2>UPLOAD DIRECTORY</h2></a></li>
 				<li><a href="/download` + savePath + `"><h2>DOWNLOAD</h2></a></li>
 				<li><a href="/delete` + savePath + `"><h2>DELETE</h2></a></li>
+				<li><button type="submit" class="upbtn" form="upload">UPLOAD DIR</button></li>
 			</ul>
 		</nav>
 		</header>
 	</head>
 	<body>
-		<form action="/upload` + savePath + `" method="POST" class="upload" enctype="multipart/form-data">
+		<form action="/upload` + savePath + `" method="POST" id="upload" class="upload" enctype="multipart/form-data">
 			<input type="file" class="file" name="file" webkitdirectory mozdirectory>
 			<p>` + status + `</p>
-			<button type="submit">Upload Directory</button>
 		</form>
 	</body>
 	</html>
@@ -429,14 +427,14 @@ func Delete(searchPath string, fInfos []os.FileInfo) string {
 				<li><a href="/uploaddir` + searchPath + `"><h2>UPLOAD DIRECTORY</h2></a></li>
 				<li><a href="/download` + searchPath + `"><h2>DOWNLOAD</h2></a></li>
 				<li><a href="/delete` + searchPath + `"><h2>DELETE</h2></a></li>
+				<li><button type="submit" class="delbtn" form="delete">DELETE</button></li>
 			</ul>
 		</nav>
 		</header>
 	</head>
 	<body>
-		<form action="/delete` + searchPath + `" class="delete" method="POST">
+		<form action="/delete` + searchPath + `" id="delete" class="delete" method="POST">
 			<div class="grid">` + items.String() + `</div>
-			<button type="submit">Delete</button>
 		</form>
 	</body>
 	</html>
@@ -528,14 +526,14 @@ func Download(searchPath string, fInfos []os.FileInfo) string {
 				<li><a href="/uploaddir` + searchPath + `"><h2>UPLOAD DIRECTORY</h2></a></li>
 				<li><a href="/download` + searchPath + `"><h2>DOWNLOAD</h2></a></li>
 				<li><a href="/delete` + searchPath + `"><h2>DELETE</h2></a></li>
+				<li><button type="submit" class="dlbtn" form="download">DOWNLOAD</button></li>
 			</ul>
 		</nav>
 		</header>
 	</head>
 	<body>
-		<form action="/download` + searchPath + `" class="download" method="POST">
+		<form action="/download` + searchPath + `" id="download" class="download" method="POST">
 			<div class="grid">` + items.String() + `</div>
-			<button type="submit">Download</button>
 		</form>
 	</body>
 	</html>
