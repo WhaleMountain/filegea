@@ -53,6 +53,16 @@ const (
 		outline: none;
 		box-shadow: 4px 4px;
 	}
+	.delete {
+		text-align: center;
+	}
+	.delete button{
+		color: #fff;
+		background: #9179a4;
+		width: 600px;
+		height: 50px;
+		box-shadow: 4px 4px;
+	}
 	body {
 		margin: 20px;
 		padding: -10px;
@@ -188,6 +198,7 @@ func Index(searchPath string, fInfos []os.FileInfo) string {
 			<ul>
 				<li><a href="/filegea"><h2>HOME</h2></a></li>
 				<li><a href="/upload` + searchPath + `"><h2>UPLOAD</h2></a></li>
+				<li><a href="/delete` + searchPath + `"><h2>DELETE</h2></a></li>
 			</ul>
 		</nav>
 		</header>
@@ -220,6 +231,7 @@ func Upload(savePath string) string {
 			<ul>
 				<li><a href="/filegea"><h2>HOME</h2></a></li>
 				<li><a href="/upload` + savePath + `"><h2>UPLOAD</h2></a></li>
+				<li><a href="/delete` + savePath + `"><h2>DELETE</h2></a></li>
 			</ul>
 		</nav>
 		</header>
@@ -230,6 +242,90 @@ func Upload(savePath string) string {
 			<p>Drag and Drop or Click in this area.</p>
 			<button type="submit">Upload</button>
   		</form>
+	</body>
+	</html>
+	`
+
+	return html
+}
+
+//Delete delete html
+func Delete(searchPath string, fInfos []os.FileInfo) string {
+	title := "FileGEA"
+
+	var items strings.Builder
+	for _, finfo := range fInfos {
+		if finfo.Name() == ".DS_Store" {
+			continue
+		}
+
+		fsPath := filepath.Join(staticFS, searchPath, finfo.Name())
+		hostPath := filepath.Join(searchPath, finfo.Name())
+		if finfo.IsDir() {
+			// ディレクトリ
+
+			items.WriteString(`
+			<label>
+			<div class="item linkbox">
+			<input type="checkbox" name="dir" value="` + hostPath + `" >
+			<p>` + finfo.Name() + `</p>
+			</div>
+			</label>
+			`)
+
+		} else if strings.HasSuffix(finfo.Name(), ".mp4") {
+			// 動画ファイル
+
+			items.WriteString(`
+			<label>
+			<div class="item">
+			<input type="checkbox" name="video" value="` + hostPath + `" >
+			<video src="` + fsPath + `" controls playline></video>
+			<p>` + finfo.Name() + `</p>
+			</div>
+			</label>
+			`)
+
+		} else {
+			// 画像ファイル
+
+			items.WriteString(`
+			<label>
+			<div class="item linkbox">
+			<input type="checkbox" name="img" value="` + hostPath + `" >
+			<img src="` + fsPath + `" />
+			<p>` + finfo.Name() + `</p>
+			</div>
+			</label>
+			`)
+		}
+	}
+
+	html := `
+	<!DOCTYPE html>
+	<html lang="ja">
+	<head>
+		<meta charset="UTF-8">
+		<title>` + title + `</title>
+		<style>` + css + `</style>
+		<header>
+		<h1>
+			<a href="/">FILEGEA</a>
+		</h1>
+		<nav class="pc-navi">
+			<ul>
+				<li><a href="/filegea"><h2>HOME</h2></a></li>
+				<li><a href="/upload` + searchPath + `"><h2>UPLOAD</h2></a></li>
+				<li><a href="/delete` + searchPath + `"><h2>DELETE</h2></a></li>
+			</ul>
+		</nav>
+		</header>
+	</head>
+	<body>
+		<form action="/delete` + searchPath + `" class="delete" method="POST">
+			<div class="grid">` + items.String() + `</div>
+			<button type="submit">Delete</button>
+		</form>
 	</body>
 	</html>
 	`

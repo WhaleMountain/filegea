@@ -60,11 +60,24 @@ func (fgc *FileGeaController) Upload(c *gin.Context) {
 	c.Redirect(http.StatusMovedPermanently, "/filegea")
 }
 
+//DeleteForm index page
+func (fgc *FileGeaController) DeleteForm(c *gin.Context) {
+	searchPATH := c.Param("path")
+
+	path := filepath.Join(fgc.Conf.DataPath, searchPATH)
+	files, _ := ioutil.ReadDir(path)
+
+	c.Writer.WriteString(view.Delete(searchPATH, files))
+}
+
 //Delete delete file
 func (fgc *FileGeaController) Delete(c *gin.Context) {
-
-	if err := fileope.Delete(); err != nil {
-		log.Printf("file delete error %s\n", err)
+	c.Request.ParseForm()
+	
+	for _, paths := range c.Request.PostForm {
+		if err := fileope.Delete(paths); err != nil {
+			log.Printf("file delete error %s\n", err)
+		}
 	}
 
 	c.Redirect(http.StatusMovedPermanently, "/filegea")

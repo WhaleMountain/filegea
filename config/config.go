@@ -13,11 +13,11 @@ type Config struct {
 }
 
 //Conf path conf
-var Conf Config
+var conf Config
 
 //Init load config
 func Init() error {
-	if _, err := toml.DecodeFile(configPath, &Conf); err != nil {
+	if _, err := toml.DecodeFile(configPath, &conf); err != nil {
 		return err
 	}
 
@@ -26,5 +26,5 @@ func Init() error {
 
 //GetConfig return config
 func GetConfig() Config {
-	return Conf
+	return conf
 }

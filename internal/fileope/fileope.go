@@ -42,6 +42,16 @@ func Save(upfile *multipart.FileHeader, savePath string) error {
 }
 
 //Delete file save
-func Delete() error {
+func Delete(filePaths []string) error {
+	conf := config.GetConfig()
+	
+	for _, fp := range filePaths {
+		path := filepath.Join(conf.DataPath, fp)
+
+		if err := os.RemoveAll(path); err != nil {
+			return err
+		}
+	}
+
 	return nil
 }
