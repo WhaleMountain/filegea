@@ -4,6 +4,7 @@ import (
 	"filegea/config"
 	"filegea/internal/fileope"
 	"filegea/internal/view"
+	"fmt"
 	"io/ioutil"
 	"log"
 	"net/http"
@@ -60,7 +61,7 @@ func (fgc *FileGeaController) Upload(c *gin.Context) {
 	c.Redirect(http.StatusMovedPermanently, "/filegea")
 }
 
-//DeleteForm index page
+//DeleteForm delete page
 func (fgc *FileGeaController) DeleteForm(c *gin.Context) {
 	searchPATH := c.Param("path")
 
@@ -73,7 +74,7 @@ func (fgc *FileGeaController) DeleteForm(c *gin.Context) {
 //Delete delete file
 func (fgc *FileGeaController) Delete(c *gin.Context) {
 	c.Request.ParseForm()
-	
+
 	for _, paths := range c.Request.PostForm {
 		if err := fileope.Delete(paths); err != nil {
 			log.Printf("file delete error %s\n", err)
@@ -81,6 +82,29 @@ func (fgc *FileGeaController) Delete(c *gin.Context) {
 	}
 
 	c.Redirect(http.StatusMovedPermanently, "/filegea")
+}
+
+//DownloadForm download page
+func (fgc *FileGeaController) DownloadForm(c *gin.Context) {
+	searchPATH := c.Param("path")
+
+	path := filepath.Join(fgc.Conf.DataPath, searchPATH)
+	files, _ := ioutil.ReadDir(path)
+
+	c.Writer.WriteString(view.Download(searchPATH, files))
+}
+
+//Download download file
+func (fgc *FileGeaController) Download(c *gin.Context) {
+	c.Request.ParseForm()
+
+	for _, paths := range c.Request.PostForm {
+		filename, fpath, _ := fileope.Download(paths)
+
+		c.Writer.Header().Add("Content-Disposition", fmt.Sprintf("attachment; filename=%s", filename))
+		c.Writer.Header().Add("Content-Type", "application/octet-stream")
+		c.File(fpath)
+	}
 }
 
 //Redirect / -> /filegea

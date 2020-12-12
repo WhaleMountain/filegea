@@ -2,10 +2,12 @@ package fileope
 
 import (
 	"filegea/config"
+	"fmt"
 	"io"
 	"mime/multipart"
 	"os"
 	"path/filepath"
+	"time"
 )
 
 //Save file save
@@ -44,7 +46,7 @@ func Save(upfile *multipart.FileHeader, savePath string) error {
 //Delete file save
 func Delete(filePaths []string) error {
 	conf := config.GetConfig()
-	
+
 	for _, fp := range filePaths {
 		path := filepath.Join(conf.DataPath, fp)
 
@@ -54,4 +56,21 @@ func Delete(filePaths []string) error {
 	}
 
 	return nil
+}
+
+//Download file save
+func Download(files []string) (string, string, error) {
+
+	conf := config.GetConfig()
+	targets := []string{}
+	zipPath := fmt.Sprintf("/tmp/filegea_%s.zip", time.Now().Format("20060102150405"))
+
+	for _, file := range files {
+		targets = append(targets, filepath.Join(conf.DataPath, file))
+	}
+
+	// create zip
+	zipWriter(targets, zipPath)
+
+	return filepath.Base(zipPath), zipPath, nil
 }
