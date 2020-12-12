@@ -1,8 +1,18 @@
 package main
 
-import "filegea/server"
+import (
+	"filegea/config"
+	"filegea/server"
+	"fmt"
+	"os"
+)
 
 func main() {
-	port := "1270"
-	server.Init().Run(port)
+	if err := config.Init(); err != nil {
+		fmt.Println(err)
+		os.Exit(1)
+	}
+
+	conf := config.GetConfig()
+	server.Init().Run(conf.Port)
 }

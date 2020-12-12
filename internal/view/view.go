@@ -11,7 +11,11 @@ import (
 
 const (
 	css = `
-	form{
+	.delete{
+		position: relative;
+		z-index: 20;
+	}
+	.upload{
 		position: absolute;
 		top: 40%;
 		left: 50%;
@@ -21,14 +25,14 @@ const (
 		height: 200px;
 		border: 4px dashed #b9c8d5;
 	}
-	form p{
+	.upload p{
 		width: 100%;
 		height: 100%;
 		text-align: center;
 		line-height: 170px;
 		color: #4b4b4b;
 	}
-	form .file{
+	.upload .file{
 		position: absolute;
 		margin: 0;
 		padding: 0;
@@ -37,7 +41,7 @@ const (
 		outline: none;
 		opacity: 0;
 	}
-	form button{
+	.upload button{
 		margin: 0;
 		color: #4b4b4b;
 		background: #b9c8d5;
@@ -73,7 +77,7 @@ const (
 		height: auto;
 	}
 	video {
-		width: 300px;
+		width: 100%;
 		height: auto;
 	}
 	div p {
@@ -85,12 +89,13 @@ const (
 	}
 	.linkbox {
 		position: relative;
+		z-index 10;
 	}
 	.linkbox a {
 		position: absolute;
 		top: 0;
 		left: 0;
-		height:100%;
+		height: 100%;
 		width: 100%;
 	}
 	header {
@@ -118,6 +123,9 @@ const (
 		margin: auto auto auto 0;
 	}
 	`
+
+	staticFS = "/Data"
+	uri      = "/filegea"
 )
 
 //Index index html
@@ -126,10 +134,12 @@ func Index(searchPath string, fInfos []os.FileInfo) string {
 
 	var items strings.Builder
 	for _, finfo := range fInfos {
+		if finfo.Name() == ".DS_Store" {
+			continue
+		}
 		if finfo.IsDir() {
 			// ディレクトリ
-			basePath := "/filegea"
-			path := filepath.Join(basePath, searchPath, finfo.Name())
+			path := filepath.Join(uri, searchPath, finfo.Name())
 
 			items.WriteString(`
 			<div class="item linkbox">
@@ -140,38 +150,24 @@ func Index(searchPath string, fInfos []os.FileInfo) string {
 
 		} else if strings.HasSuffix(finfo.Name(), ".mp4") {
 			// 動画ファイル
-			basePath := "/Data"
-			path := filepath.Join(basePath, searchPath, finfo.Name())
+			path := filepath.Join(staticFS, searchPath, finfo.Name())
 
 			items.WriteString(`
 			<div class="item">
 			<video src="` + path + `" controls playline></video>
-			<p>` + finfo.Name() + `</p>
-			</div>
-			`)
-
-		} else if strings.HasSuffix(finfo.Name(), ".pdf") {
-			// PDF ファイル
-			basePath := "/Data"
-			path := filepath.Join(basePath, searchPath, finfo.Name())
-
-			items.WriteString(`
-			<div class="item linkbox">
-			<a href="` + path + `"></a>
-			<p>` + finfo.Name() + `</p>
+			<!-- <p>` + finfo.Name() + `</p> -->
 			</div>
 			`)
 
 		} else {
 			// 画像ファイル
-			basePath := "/Data"
-			path := filepath.Join(basePath, searchPath, finfo.Name())
+			path := filepath.Join(staticFS, searchPath, finfo.Name())
 
 			items.WriteString(`
 			<div class="item linkbox">
 			<img src="` + path + `" />
 			<a href="` + path + `"></a>
-			<p>` + finfo.Name() + `</p>
+			<!-- <p>` + finfo.Name() + `</p> -->
 			</div>
 			`)
 		}
@@ -229,7 +225,7 @@ func Upload(savePath string) string {
 		</header>
 	</head>
 	<body>
-		<form action="/upload` + savePath + `" method="POST" enctype="multipart/form-data">
+		<form action="/upload` + savePath + `" method="POST" class="upload" enctype="multipart/form-data">
 			<input type="file" class="file" name="file" multiple>
 			<p>Drag and Drop or Click in this area.</p>
 			<button type="submit">Upload</button>

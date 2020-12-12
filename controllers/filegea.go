@@ -1,6 +1,7 @@
 package controllers
 
 import (
+	"filegea/config"
 	"filegea/internal/fileope"
 	"filegea/internal/view"
 	"io/ioutil"
@@ -12,19 +13,22 @@ import (
 )
 
 //FileGeaController filegea controller
-type FileGeaController struct{}
+type FileGeaController struct {
+	Conf config.Config
+}
 
 //NewFileGeaController filegea controller
 func NewFileGeaController() *FileGeaController {
-	return new(FileGeaController)
+	return &FileGeaController{
+		Conf: config.GetConfig(),
+	}
 }
 
 //Index index page
 func (fgc *FileGeaController) Index(c *gin.Context) {
-	basePath := "./Data"
 	searchPATH := c.Param("path")
 
-	path := filepath.Join(basePath, searchPATH)
+	path := filepath.Join(fgc.Conf.DataPath, searchPATH)
 	files, _ := ioutil.ReadDir(path)
 
 	c.Writer.WriteString(view.Index(searchPATH, files))
@@ -38,15 +42,29 @@ func (fgc *FileGeaController) UploadFrom(c *gin.Context) {
 
 //Upload upload file
 func (fgc *FileGeaController) Upload(c *gin.Context) {
-	file, err := c.FormFile("file")
+	form, err := c.MultipartForm()
 	if err != nil {
-		log.Printf("form file error %s\n", err)
+		log.Printf("Multipart form error %s\n", err)
 		c.Redirect(http.StatusMovedPermanently, "/filegea")
 	}
 
+	files := form.File["file"]
+
 	savePath := c.Param("path")
-	if err := fileope.Save(file, savePath); err != nil {
-		log.Printf("form file error %s\n", err)
+	for _, file := range files {
+		if err := fileope.Save(file, savePath); err != nil {
+			log.Printf("file save error %s\n", err)
+		}
+	}
+
+	c.Redirect(http.StatusMovedPermanently, "/filegea")
+}
+
+//Delete delete file
+func (fgc *FileGeaController) Delete(c *gin.Context) {
+
+	if err := fileope.Delete(); err != nil {
+		log.Printf("file delete error %s\n", err)
 	}
 
 	c.Redirect(http.StatusMovedPermanently, "/filegea")

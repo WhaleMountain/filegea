@@ -1,21 +1,19 @@
 package fileope
 
 import (
+	"filegea/config"
 	"io"
 	"mime/multipart"
 	"os"
 	"path/filepath"
 )
 
-const (
-	basePath = "./Data"
-)
-
 //Save file save
 func Save(upfile *multipart.FileHeader, savePath string) error {
 	fileName := upfile.Filename
 
-	saveDir := filepath.Join(basePath, savePath)
+	conf := config.GetConfig()
+	saveDir := filepath.Join(conf.DataPath, savePath)
 
 	if err := os.MkdirAll(saveDir, 0755); err != nil {
 		return err
@@ -40,5 +38,10 @@ func Save(upfile *multipart.FileHeader, savePath string) error {
 		return err
 	}
 
+	return nil
+}
+
+//Delete file save
+func Delete() error {
 	return nil
 }
