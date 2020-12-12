@@ -3,6 +3,7 @@ package view
 import (
 	"os"
 	"path/filepath"
+	"regexp"
 	"strings"
 )
 
@@ -104,6 +105,12 @@ const (
 	.item:hover {
 		background-color: #91a9b8;
 	}
+	.dir {
+		background: #e7dfa0;
+	}
+	.dir:hover {
+		background-color: #d3c77d;
+	}
 	img {
 		max-width: 100%;
 		height: auto;
@@ -164,6 +171,16 @@ const (
 	uri      = "/filegea"
 )
 
+var (
+	imagePrefix = []string{
+		"ping", "PING",
+		"jpeg", "JPG", "JPEG", "jpg",
+		"gif", "svg",
+	}
+
+	re = regexp.MustCompile(strings.Join(imagePrefix, "|"))
+)
+
 //Index index html
 func Index(searchPath string, fInfos []os.FileInfo) string {
 	title := "FileGEA"
@@ -174,11 +191,11 @@ func Index(searchPath string, fInfos []os.FileInfo) string {
 			continue
 		}
 		if finfo.IsDir() {
-			// ディレクトリ
+			// ディレクトリ 
 			path := filepath.Join(uri, searchPath, finfo.Name())
 
 			items.WriteString(`
-			<div class="item linkbox">
+			<div class="item linkbox dir">
 			<a href="` + path + `"></a>
 			<p>` + finfo.Name() + `</p>
 			</div>
@@ -195,7 +212,7 @@ func Index(searchPath string, fInfos []os.FileInfo) string {
 			</div>
 			`)
 
-		} else {
+		} else if re.MatchString(finfo.Name()) {
 			// 画像ファイル
 			path := filepath.Join(staticFS, searchPath, finfo.Name())
 
@@ -204,6 +221,17 @@ func Index(searchPath string, fInfos []os.FileInfo) string {
 			<img src="` + path + `" />
 			<a href="` + path + `"></a>
 			<!-- <p>` + finfo.Name() + `</p> -->
+			</div>
+			`)
+
+		} else {
+			//ディレクトリ, 画像, 動画 以外
+			path := filepath.Join(staticFS, searchPath, finfo.Name())
+
+			items.WriteString(`
+			<div class="item linkbox">
+			<a href="` + path + `"></a>
+			<p>` + finfo.Name() + `</p>
 			</div>
 			`)
 		}
@@ -327,45 +355,49 @@ func Delete(searchPath string, fInfos []os.FileInfo) string {
 		if finfo.Name() == ".DS_Store" {
 			continue
 		}
-
-		fsPath := filepath.Join(staticFS, searchPath, finfo.Name())
-		hostPath := filepath.Join(searchPath, finfo.Name())
 		if finfo.IsDir() {
-			// ディレクトリ
+			// ディレクトリ 
+			path := filepath.Join(uri, searchPath, finfo.Name())
 
 			items.WriteString(`
-			<label>
-			<div class="item linkbox">
-			<input type="checkbox" name="target" value="` + hostPath + `" >
+			<div class="item linkbox dir">
+			<a href="` + path + `"></a>
 			<p>` + finfo.Name() + `</p>
 			</div>
-			</label>
 			`)
 
 		} else if strings.HasSuffix(finfo.Name(), ".mp4") {
 			// 動画ファイル
+			path := filepath.Join(staticFS, searchPath, finfo.Name())
 
 			items.WriteString(`
-			<label>
 			<div class="item">
-			<input type="checkbox" name="target" value="` + hostPath + `" >
-			<video src="` + fsPath + `" controls playline></video>
-			<p>` + finfo.Name() + `</p>
+			<video src="` + path + `" controls playline></video>
+			<!-- <p>` + finfo.Name() + `</p> -->
 			</div>
-			</label>
+			`)
+
+		} else if re.MatchString(finfo.Name()) {
+			// 画像ファイル
+			path := filepath.Join(staticFS, searchPath, finfo.Name())
+
+			items.WriteString(`
+			<div class="item linkbox">
+			<img src="` + path + `" />
+			<a href="` + path + `"></a>
+			<!-- <p>` + finfo.Name() + `</p> -->
+			</div>
 			`)
 
 		} else {
-			// 画像ファイル
+			//ディレクトリ, 画像, 動画 以外
+			path := filepath.Join(staticFS, searchPath, finfo.Name())
 
 			items.WriteString(`
-			<label>
 			<div class="item linkbox">
-			<input type="checkbox" name="target" value="` + hostPath + `" >
-			<img src="` + fsPath + `" />
+			<a href="` + path + `"></a>
 			<p>` + finfo.Name() + `</p>
 			</div>
-			</label>
 			`)
 		}
 	}
@@ -413,45 +445,49 @@ func Download(searchPath string, fInfos []os.FileInfo) string {
 		if finfo.Name() == ".DS_Store" {
 			continue
 		}
-
-		fsPath := filepath.Join(staticFS, searchPath, finfo.Name())
-		hostPath := filepath.Join(searchPath, finfo.Name())
 		if finfo.IsDir() {
-			// ディレクトリ
+			// ディレクトリ 
+			path := filepath.Join(uri, searchPath, finfo.Name())
 
 			items.WriteString(`
-			<label>
-			<div class="item linkbox">
-			<input type="checkbox" name="target" value="` + hostPath + `" >
+			<div class="item linkbox dir">
+			<a href="` + path + `"></a>
 			<p>` + finfo.Name() + `</p>
 			</div>
-			</label>
 			`)
 
 		} else if strings.HasSuffix(finfo.Name(), ".mp4") {
 			// 動画ファイル
+			path := filepath.Join(staticFS, searchPath, finfo.Name())
 
 			items.WriteString(`
-			<label>
 			<div class="item">
-			<input type="checkbox" name="target" value="` + hostPath + `" >
-			<video src="` + fsPath + `" controls playline></video>
-			<p>` + finfo.Name() + `</p>
+			<video src="` + path + `" controls playline></video>
+			<!-- <p>` + finfo.Name() + `</p> -->
 			</div>
-			</label>
+			`)
+
+		} else if re.MatchString(finfo.Name()) {
+			// 画像ファイル
+			path := filepath.Join(staticFS, searchPath, finfo.Name())
+
+			items.WriteString(`
+			<div class="item linkbox">
+			<img src="` + path + `" />
+			<a href="` + path + `"></a>
+			<!-- <p>` + finfo.Name() + `</p> -->
+			</div>
 			`)
 
 		} else {
-			// 画像ファイル
+			//ディレクトリ, 画像, 動画 以外
+			path := filepath.Join(staticFS, searchPath, finfo.Name())
 
 			items.WriteString(`
-			<label>
 			<div class="item linkbox">
-			<input type="checkbox" name="target" value="` + hostPath + `" >
-			<img src="` + fsPath + `" />
+			<a href="` + path + `"></a>
 			<p>` + finfo.Name() + `</p>
 			</div>
-			</label>
 			`)
 		}
 	}
