@@ -4,7 +4,7 @@ import (
 	"github.com/BurntSushi/toml"
 )
 
-const configPath = "./config.toml"
+const configPath = "/opt/filegea/config.toml"
 
 //Config conf
 type Config struct {

@@ -1,2 +1,2 @@
-Port = "1270"
+Port = "80"
 DataPath = "./Data"
