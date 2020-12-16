@@ -7,8 +7,11 @@ import (
 	"strings"
 )
 
-// Form HTML and CSS. Thank you.
+// Form HTML and CSS.
 // https://codepen.io/TheLukasWeb/pen/qlGDa
+
+// Modal THML and CSS
+// https://dev.to/mandrewdarts/css-only-modal-using-target-5ac7
 
 const (
 	css = `
@@ -162,6 +165,80 @@ const (
 	}
 	nav {
 		margin: auto auto auto 0;
+	}
+	/* Greeting Modal Container */
+	#warning {
+	  visibility: hidden;
+	  opacity: 0;
+	  transition: all .5s cubic-bezier(0.075, 0.82, 0.165, 1);
+	}
+	
+	/* Greeting Modal Container - when open */
+	#warning:target {
+	  visibility: visible;
+	  opacity: 1;
+	}
+	
+	/* Greeting Modal */
+	#warning .modal {
+	  opacity: 0;
+	  transform: translateY(-1rem);
+	  transition: all .3s cubic-bezier(0.075, 0.82, 0.165, 1);
+	  transition-delay: .2s;
+	}
+	
+	/* Greeting Modal - when open */
+	#warning:target .modal {
+	transform: translateY(0);
+	opacity: 1;
+	}
+	
+	/* Modal Container Styles */
+	.modal-container {
+	  position: fixed;
+	  top: 0;
+	  left: 0;
+	  right: 0;
+	  bottom: 0;
+	  display: flex;
+	  justify-content: center;
+	  align-items: center;
+	}
+	
+	/* Modal Background Styles */
+	.modal-bg {
+	  position: fixed;
+	  top: 0;
+	  left: 0;
+	  right: 0;
+	  bottom: 0;
+	  background-color: rgba(0, 0, 0, .2);
+	}
+	
+	/* Modal Body Styles */
+	.modal {
+	  z-index: 1;
+	  background-color: white;
+	  width: 80%;
+	  max-width: 500px;
+	  padding: 1rem;
+	  border-radius: 8px;
+	}
+	.modal h3 {
+		color: red;
+	}
+	.warbtn{
+		font-weight: bold;
+		color: #4b4b4b;
+		background: #a6deab;
+		width: 150px;
+		height: 50px;
+		box-shadow: 4px 4px;
+		display: block;
+		margin: 0 0 0 auto;
+	}
+	.warbtn:hover {
+		background-color: #9bcd87;
 	}
 	`
 
@@ -427,7 +504,7 @@ func Delete(searchPath string, fInfos []os.FileInfo) string {
 				<li><a href="/uploaddir` + searchPath + `"><h2>UPLOAD DIRECTORY</h2></a></li>
 				<li><a href="/download` + searchPath + `"><h2>DOWNLOAD</h2></a></li>
 				<li><a href="/delete` + searchPath + `"><h2>DELETE</h2></a></li>
-				<li><button type="submit" class="delbtn" form="delete">DELETE</button></li>
+				<li><button onclick="location.href='#warning'" class="delbtn" >DELETE</button></li>
 			</ul>
 		</nav>
 		</header>
@@ -436,6 +513,18 @@ func Delete(searchPath string, fInfos []os.FileInfo) string {
 		<form action="/delete` + searchPath + `" id="delete" class="delete" method="POST">
 			<div class="grid">` + items.String() + `</div>
 		</form>
+		<!-- Modal container -->
+		<div 
+		  class="modal-container" id="warning">
+		  <!-- Modal  -->
+		  <div class="modal">
+			<h3>Warning</h3>
+			<p>Do you really want to delete this.</p>
+			<button type="submit" class="warbtn" form="delete">Yes I really mean it</button>
+		  </div>
+		  <!-- Background, click to close -->
+		  <a href="#" class="modal-bg"></a>
+		</div>	  
 	</body>
 	</html>
 	`
