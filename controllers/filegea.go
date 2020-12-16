@@ -60,6 +60,9 @@ func (fgc *FileGeaController) Upload(c *gin.Context) {
 	}
 
 	files := form.File["file"]
+	if len(files) <= 0 {
+		c.Redirect(http.StatusMovedPermanently, "/filegea")
+	} 
 
 	for _, file := range files {
 		if err := fileope.Save(file, savePath); err != nil {
@@ -117,6 +120,9 @@ func (fgc *FileGeaController) Download(c *gin.Context) {
 		c.Writer.Header().Add("Content-Type", "application/zip")
 		c.File(fpath)
 	}
+
+	// Nothing is checked
+	c.Redirect(http.StatusMovedPermanently, "/filegea")
 }
 
 //Redirect / -> /filegea
