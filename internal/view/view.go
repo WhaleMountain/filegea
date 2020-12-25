@@ -196,6 +196,7 @@ const (
 	/* Modal Container Styles */
 	.modal-container {
 	  position: fixed;
+	  z-index: 30;
 	  top: 0;
 	  left: 0;
 	  right: 0;
@@ -217,7 +218,7 @@ const (
 	
 	/* Modal Body Styles */
 	.modal {
-	  z-index: 1;
+	  z-index: 40;
 	  background-color: white;
 	  width: 80%;
 	  max-width: 500px;
