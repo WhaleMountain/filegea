@@ -1,2 +1,2 @@
 Port = "1270"
-DataPath = "./Data"
+DataPath = "/opt/filegea/Data"
