@@ -35,3 +35,13 @@ DataPath = "/opt/filegea/Data"
 $ cd /opt/filegea
 $ ./filegea
 ```
+
+### Use Docker
+
+```shell
+$ git clone https://github.com/WhaleMountain/filegea.git
+$ cd filegea
+$ docker build -t filegea .
+$ mkdir -p data
+$ docker run --rm -d -v $PWD/data:/opt/filegea/Data -p 1270:1270 filegea
+```
