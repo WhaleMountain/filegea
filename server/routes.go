@@ -1,7 +1,7 @@
 package server
 
 import (
-	"filegea/controllers"
+	"filegea/internal/controller"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -10,7 +10,7 @@ import (
 func router() *gin.Engine {
 	r := gin.Default()
 
-	filegea := controllers.NewFileGeaController()
+	filegea := controller.NewFileGeaController()
 
 	r.GET("/", filegea.Redirect)
 	r.GET("/filegea/*path", filegea.Index)

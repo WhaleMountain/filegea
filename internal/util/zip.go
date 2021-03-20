@@ -1,4 +1,4 @@
-package fileope
+package util
 
 import (
 	"archive/zip"

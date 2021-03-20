@@ -1,9 +1,9 @@
-package controllers
+package controller
 
 import (
 	"filegea/config"
-	"filegea/internal/fileope"
-	"filegea/internal/view"
+	"filegea/internal/ui"
+	"filegea/internal/util"
 	"fmt"
 	"io/ioutil"
 	"log"
@@ -32,21 +32,21 @@ func (fgc *FileGeaController) Index(c *gin.Context) {
 	path := filepath.Join(fgc.Conf.DataPath, searchPATH)
 	files, _ := ioutil.ReadDir(path)
 
-	c.Writer.WriteString(view.Index(searchPATH, files))
+	c.Writer.WriteString(ui.Index(searchPATH, files))
 }
 
 //UploadFrom upload form
 func (fgc *FileGeaController) UploadFrom(c *gin.Context) {
 	savePath := c.Param("path")
 	status := "Drag and Drop or Click in this area."
-	c.Writer.WriteString(view.Upload(savePath, status))
+	c.Writer.WriteString(ui.Upload(savePath, status))
 }
 
 //UploadFromDir upload dir form
 func (fgc *FileGeaController) UploadFromDir(c *gin.Context) {
 	savePath := c.Param("path")
 	status := "Drag and Drop or Click in this area."
-	c.Writer.WriteString(view.UploadDir(savePath, status))
+	c.Writer.WriteString(ui.UploadDir(savePath, status))
 }
 
 //Upload upload file
@@ -56,24 +56,24 @@ func (fgc *FileGeaController) Upload(c *gin.Context) {
 	if err != nil {
 		log.Printf("Multipart form error %s\n", err)
 		status := fmt.Sprintf("Error: %s", err)
-		c.Writer.WriteString(view.Upload(savePath, status))
+		c.Writer.WriteString(ui.Upload(savePath, status))
 	}
 
 	files := form.File["file"]
 	if len(files) <= 0 {
 		c.Redirect(http.StatusMovedPermanently, "/filegea")
-	} 
+	}
 
 	for _, file := range files {
-		if err := fileope.Save(file, savePath); err != nil {
+		if err := util.Save(file, savePath); err != nil {
 			log.Printf("file save error %s\n", err)
 			status := fmt.Sprintf("Error: %s", err)
-			c.Writer.WriteString(view.Upload(savePath, status))
+			c.Writer.WriteString(ui.Upload(savePath, status))
 		}
 	}
 
 	status := "Upload Success !!"
-	c.Writer.WriteString(view.Upload(savePath, status))
+	c.Writer.WriteString(ui.Upload(savePath, status))
 }
 
 //DeleteForm delete page
@@ -83,7 +83,7 @@ func (fgc *FileGeaController) DeleteForm(c *gin.Context) {
 	path := filepath.Join(fgc.Conf.DataPath, searchPATH)
 	files, _ := ioutil.ReadDir(path)
 
-	c.Writer.WriteString(view.Delete(searchPATH, files))
+	c.Writer.WriteString(ui.Delete(searchPATH, files))
 }
 
 //Delete delete file
@@ -91,7 +91,7 @@ func (fgc *FileGeaController) Delete(c *gin.Context) {
 	c.Request.ParseForm()
 
 	for _, paths := range c.Request.PostForm {
-		if err := fileope.Delete(paths); err != nil {
+		if err := util.Delete(paths); err != nil {
 			log.Printf("file delete error %s\n", err)
 		}
 	}
@@ -106,7 +106,7 @@ func (fgc *FileGeaController) DownloadForm(c *gin.Context) {
 	path := filepath.Join(fgc.Conf.DataPath, searchPATH)
 	files, _ := ioutil.ReadDir(path)
 
-	c.Writer.WriteString(view.Download(searchPATH, files))
+	c.Writer.WriteString(ui.Download(searchPATH, files))
 }
 
 //Download download file
@@ -114,7 +114,7 @@ func (fgc *FileGeaController) Download(c *gin.Context) {
 	c.Request.ParseForm()
 
 	for _, paths := range c.Request.PostForm {
-		filename, fpath, _ := fileope.Download(paths)
+		filename, fpath, _ := util.Download(paths)
 
 		c.Writer.Header().Add("Content-Disposition", fmt.Sprintf("attachment; filename=%s", filename))
 		c.Writer.Header().Add("Content-Type", "application/zip")
