@@ -318,72 +318,72 @@ const (
 //DIV
 const (
 	div = `
-	{{ if eq .Ctype "dir" }}
-	{{ if .CheckBox }}
-	<label>
-	{{ end }}
-	<div class="item linkbox dir">
+	{{ if eq .Ctype "dir" }}	
 		{{ if .CheckBox }}
-		<input type="checkbox" name="target" value="{{.HostPath}}" >
+			<label>
+				<div class="item linkbox dir">
+					<input type="checkbox" name="target" value="{{.HostPath}}" >
+					<p>{{.Name}}</p>
+				</div>
+			</label>
+
 		{{ else }}
-		<a href="{{.Path}}"></a>
+			<div class="item linkbox dir">
+				<a href="{{.Path}}"></a>
+				<p>{{.Name}}</p>
+			</div>
 		{{ end }}
-		<p>{{.Name}}</p>
-	</div>
-	{{ if .CheckBox }}
-	</label>
-	{{ end }}
+	
 
 	{{ else if eq .Ctype "video" }}
-	{{ if .CheckBox }}
-	<label>
-	{{ end }}
-	<div class="item">
 		{{ if .CheckBox }}
-		<input type="checkbox" name="target" value="{{.HostPath}}" >
+			<label>
+				<div class="item">
+					<input type="checkbox" name="target" value="{{.HostPath}}" >
+					<video src="{{.Path}}" controls playline></video>
+					<p>{{.Name}}</p>
+				</div>
+			</label>
+		
+		{{ else }}
+			<div class="item">
+				<video src="{{.Path}}" controls playline></video>
+			</div>
 		{{ end }}
-		<video src="{{.Path}}" controls playline></video>
-		{{ if ne .Name "" }}
-		<p>{{.Name}}</p>
-		{{ end }}
-	</div>
-	{{ if .CheckBox }}
-	</label>
-	{{ end }}
+
 
 	{{ else if eq .Ctype "img" }}
-	{{ if .CheckBox }}
-	<label>
-	{{ end }}
-	<div class="item linkbox">
 		{{ if .CheckBox }}
-		<input type="checkbox" name="target" value="{{.HostPath}}" >
+			<label>
+				<div class="item linkbox">
+					<input type="checkbox" name="target" value="{{.HostPath}}" >
+					<img src="{{.Path}}" />
+					<p>{{.Name}}</p>
+				</div>
+			</label>
+		{{ else }}
+			<div class="item linkbox">
+				<img src="{{.Path}}" />
+				<a href="{{.Path}}"></a>
+			</div>
 		{{ end }}
-		<img src="{{.Path}}" />
-		<a href="{{.Path}}"></a>
-		{{ if ne .Name "" }}
-		<p>{{.Name}}</p>
-		{{ end }}
-	</div>
-	{{ if .CheckBox }}
-	</label>
-	{{ end }}
+
 
 	{{ else if eq .Ctype "other" }}
-	{{ if .CheckBox }}
-	<label>
-	{{ end }}
-	<div class="item linkbox">
 		{{ if .CheckBox }}
-		<input type="checkbox" name="target" value="{{.HostPath}}" >
+			<label>
+				<div class="item linkbox">
+					<input type="checkbox" name="target" value="{{.HostPath}}" >
+					<p>{{.Name}}</p>
+				</div>
+			</label>
+
 		{{ else }}
-		<a href="{{.Path}}"></a>
+			<div class="item linkbox">
+				<p>{{.Name}}</p>
+				<a href="{{.Path}}"></a>
+			</div>
 		{{ end }}
-		<p>{{.Name}}</p>
-	</div>
-	{{ if .CheckBox }}
-	</label>
-	{{ end }}
 	{{ end }}
 	`
 )
